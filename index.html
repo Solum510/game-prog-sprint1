@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pong</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canv"></canvas>
+    <script>
+        let canvas = document.getElementById("canv");
+        let ctx = canvas.getContext("2d");
+
+
+        //tell javascript you care about keyboard input
+        let keysDown = []
+        document.addEventListener("keydown", keyDown);
+        document.addEventListener("keyup", keyUp);
+
+
+        function keyDown(e) {
+            // console.log(e);
+            keysDown[e.key] = true;
+            if (e.key == "ArrowLeft") {
+                console.log("down left");
+                //pv = -2;
+            }
+            if (e.key == "ArrowRight") {
+                console.log("down right");
+                //pv = 2;
+            }
+        }
+
+        function keyUp(e) {
+            if (sceneIndex == 0) {
+                sceneIndex = 1;
+            } else {
+                keysDown[e.key] = false;
+                if (e.key == "ArrowLeft") {
+                    console.log("up left");
+                    //pv = 0;
+                }
+                if (e.key == "ArrowRight") {
+                    console.log("up right");
+                    //pv = 0;
+                }
+                if (e.key == "p") {
+                    isPaused = !isPaused;
+                }
+            }
+        }
+
+
+        let margin = 20;
+        let size = 100;
+
+        //gameStates
+        let isPaused = false;
+        let sceneIndex = 0; //0 = open, 1 = run, 2 = die
+
+        //paddle
+        let px = margin + size / 2;
+        let pwidth = 30;
+        let pheight = 5;
+        //pv = 0;
+
+        //score
+        let score = 0;
+        //high score here but it needs to have memory so..
+
+        
+        //cirlce start
+        let pongx = margin + size / 2;
+        let pongy = margin + size / 2;
+
+        //circle velocity
+        let pongVX = 3;
+        let pongVY = 2;
+
+
+        function update() {
+            if (isPaused) return;
+            //model of mvc
+            //console.log(keysDown)
+            if (sceneIndex == 0) {
+                //game is paused
+            } else {
+                //move ball
+                pongx += pongVX;
+                pongy += pongVY;
+
+                //move paddle
+                //px += pv;
+
+
+                if (pongx + pongVX > margin + size) {
+                    pongVX *= -1
+                }
+                if (pongy + pongVY > margin + size) {
+                    if (pongx > px - pwidth / 2 && pongx < px + pwidth / 2) {
+                        pongVY = -Math.abs(pongVY);
+                        score++;
+                    } else {
+                        //die
+                        location.reload(); //lmao
+                    }
+                    //pongVY *= -1
+                }
+                if (pongx + pongVX < margin) {
+                    pongVX *= -1
+                }
+                if (pongy + pongVY < margin) {
+                    pongVY *= -1
+                }
+
+                //moving the paddle the way we do it in class
+                //pull keyboard state + move paddle
+                if (keysDown["ArrowRight"]) {
+                    px += 2;
+                }
+                if (keysDown["ArrowLeft"]) {
+                    px -= 2;
+                }
+                if (px - pwidth / 2 < margin) {
+                    px = margin + pwidth / 2;
+                }
+                if (px + pwidth / 2 > size + margin) {
+                    px = size + margin - pwidth / 2;
+                }
+            }
+        }
+
+        function draw() {
+
+            //view of mvc
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+            if (sceneIndex == 0) {
+                ctx.fillText("Pong", 0, 10);
+            } else {
+
+                //clear the canvas, i know this isn't how we did it in class but i googled it before we got there
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                //how we did it in class
+                // ctx.fillStyle = "green";
+                // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                //draw a box
+                ctx.beginPath();
+                ctx.moveTo(margin, margin);
+                ctx.lineTo(margin + size, margin);
+                ctx.lineTo(margin + size, margin + size);
+                ctx.moveTo(margin, margin + size);
+                ctx.lineTo(margin, margin);
+                ctx.stroke();
+
+                //draw circle
+                ctx.fillStyle = "blue"
+                ctx.beginPath();
+                ctx.arc(pongx, pongy, 5, 0, 2 * Math.PI);
+                ctx.fill();
+
+                //paddle time
+                ctx.beginPath();
+                ctx.moveTo(px - pwidth / 2, size + margin);
+                ctx.lineTo(px + pwidth / 2, size + margin);
+                ctx.stroke();
+
+                //draw score
+                ctx.fillText(score, px, margin + size + margin);
+            }
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+        }
+
+
+        setInterval(gameLoop, 1000 / 25);
+
+    </script>
+</body>
+
+</html>
