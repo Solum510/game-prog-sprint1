@@ -17,3 +17,9 @@ Objectives for sprint 1:
     side comment: having this stuff in multiple files would be nice. 
 
     stack overflow page for if statement: https://stackoverflow.com/questions/13107855/how-to-check-if-an-array-index-exists-or-not-in-javascript 
+
+
+Objectives for sprint 1 in class: 
+    I think I want to work on creating the repository for the final project that will be going onto github pages, and then plug this repo onto it. 
+    I'll be shoving the pong game into a pong directory so users should be able to navigate using the url for now. I believe. 
+    Next, turning the pong game into brick breaker is something I think I would like to do.
